@@ -1,4 +1,4 @@
-echo "# 📰 AI-Powered News Summarizer
+### 📰 AI-Powered News Summarizer
 
 ## 🚀 Objective
 An AI-powered News Summarizer built with Azure Functions that extracts and summarizes news articles from a given URL.
@@ -21,4 +21,4 @@ An AI-powered News Summarizer built with Azure Functions that extracts and summa
 
 ## 👨‍💻 Developer
 **Borem Chakravardhan Reddy**
-" > README.md
+
