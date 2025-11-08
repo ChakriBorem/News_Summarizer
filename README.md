@@ -26,19 +26,19 @@ To build and deploy an **AI-based News Summarization Web App** that:
 ### 🧩 Backend — Azure Function (Python)
 
 ```
-1. Create a Resource Group:
+#1. Create a Resource Group:
 az group create --name UploaderRG --location centralindia
 
-2. Create a Storage Account:
+#2. Create a Storage Account:
 az storage account create --name chakrinewsstore --location centralindia --resource-group UploaderRG --sku Standard_LRS
 
-3. Deploy the Azure Function:
+#3. Deploy the Azure Function:
 func azure functionapp publish chakrinewssummarizer
 
-4. Get the Function Endpoint:
+#4. Get the Function Endpoint:
 https://chakrinewssummarizer-fbgmcadpepd3aucb.centralindia-01.azurewebsites.net/api/summarizenews
 
-5. Enable CORS for the frontend:
+#5. Enable CORS for the frontend:
 az functionapp cors add --name chakrinewssummarizer --resource-group UploaderRG --allowed-origins "https://chakrinewsfrontend.z29.web.core.windows.net"
 ```
 
