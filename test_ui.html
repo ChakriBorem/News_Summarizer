@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Summarizer</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background-color: #f5f7fb;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+        h2 {
+            margin-top: 40px;
+            color: #222;
+        }
+        #input-container {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            width: 80%;
+            max-width: 700px;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        button {
+            padding: 10px 16px;
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005a9e;
+        }
+        #summary {
+            margin-top: 30px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 700px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        #error {
+            color: red;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        #loading {
+            margin-top: 20px;
+            display: none;
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>📰 News Summarizer</h2>
+
+    <div id="input-container">
+        <input type="text" id="url" placeholder="Enter a news article URL...">
+        <button onclick="summarize()">Summarize</button>
+    </div>
+
+    <div id="loading">Fetching and summarizing article... ⏳</div>
+    <div id="error"></div>
+    <div id="summary"></div>
+
+    <script>
+        async function summarize() {
+            const url = document.getElementById("url").value.trim();
+            const summaryDiv = document.getElementById("summary");
+            const errorDiv = document.getElementById("error");
+            const loadingDiv = document.getElementById("loading");
+
+            // Reset UI
+            summaryDiv.textContent = "";
+            errorDiv.textContent = "";
+            loadingDiv.style.display = "block";
+
+            if (!url) {
+                errorDiv.textContent = "⚠️ Please enter a URL.";
+                loadingDiv.style.display = "none";
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    "https://chakrinewssummarizer-fbgmcadpepd3aucb.centralindia-01.azurewebsites.net/api/summarizenews",
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ url: url })
+                    }
+                );
+
+                loadingDiv.style.display = "none";
+
+                // Azure returns plain text sometimes, not JSON
+                const text = await response.text();
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}: ${text}`);
+                }
+
+                // Try parsing JSON, fallback to text
+                let summary;
+                try {
+                    const data = JSON.parse(text);
+                    summary = data.summary || text;
+                } catch {
+                    summary = text;
+                }
+
+                summaryDiv.innerHTML = `<b>Summary:</b><br><br>${summary}`;
+
+            } catch (err) {
+                loadingDiv.style.display = "none";
+                errorDiv.textContent = `Failed to connect: ${err.message}`;
+            }
+        }
+    </script>
+
+</body>
+</html>
